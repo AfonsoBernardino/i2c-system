@@ -1,0 +1,58 @@
+/*
+*  Device Tree overlay for PCA9547 I2C Multiplexer
+*
+*/
+/dts-v1/;
+/plugin/;
+
+/ {
+
+	compatible = "brcm,bcm2708";
+
+        fragment@0 {
+                traget = <&i2c0>;
+                target-path = "/soc/i2c@7e205000";
+                __overlay__ {
+
+			compatible = "brcm,bcm2708-i2c";
+			reg = <0x7e205000 0x1000>;
+			interrupts = <0x2 0x15>;
+			clocks = <0x5>;
+			#address-cells = <0x1>;
+			#size-cells = <0x0>;
+			status = "okay";
+			pinctrl-names = "default";
+			pinctrl-0 = <0x6>;
+			clock-frequency = <0x186a0>;
+			linux,phandle = <0xb>;
+			phandle = <0xb>;
+                };
+        };
+
+
+	fragment@1 {
+		traget = <&i2c1>;
+		target-path = "/soc/i2c@7e804000";
+		__overlay__ {
+			compatible = "brcm,bcm2708-i2c";
+			reg = <0x7e804000 0x1000>;
+			interrupts = <0x2 0x15>;
+			clocks = <0x5>;
+			#address-cells = <1>;
+			#size-cells = <0>;
+			status = "okay";
+			pinctrl-names = "default";
+			pinctrl-0 = <0x7>;
+			clock-frequency = <0x186a0>;
+			linux,phandle = <0xc>;
+			phandle = <0xc>;
+
+			pca9547: i2c-mux@70 {
+				compatible = "nxp,pca9547";
+				#address-cells = <1>;
+				#size-cells = <0>;
+				reg = <0x70>;
+			};
+		};
+	};
+};

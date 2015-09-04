@@ -14,8 +14,7 @@
 #include <fcntl.h>
 #include <errno.h>
 #include <pthread.h>
-#include "swap_byte.h"
-#include "msleep.h"
+#include <linux/swab.h>
 
 
 /* MPL115 Registers */
@@ -29,7 +28,7 @@
 /* MPL115 I2C Address */
 #define MPL115_ADDR					0x60
 //
-#define MPL115_CONVERSION_TIME_MAX	3
+#define MPL115_CONVERSION_TIME_MAX	3000 //us
 
 /*Check functionality*/
 int mpl115_functionality(int fd){
@@ -62,7 +61,7 @@ int mpl115_convert(int fd, int addr){
 		return ret;	
 	}
 		
-	msleep(MPL115_CONVERSION_TIME_MAX);
+	usleep(MPL115_CONVERSION_TIME_MAX);
 	
 	return 0;	
 }
@@ -82,7 +81,7 @@ int mpl115_temp(int fd, int addr){
 		return ret;	
 	}
 	
-	msleep(MPL115_CONVERSION_TIME_MAX);
+	usleep(MPL115_CONVERSION_TIME_MAX);
 	
 	ret = i2c_smbus_read_word_data(fd, MPL115_TADC);
 	
@@ -91,7 +90,7 @@ int mpl115_temp(int fd, int addr){
 		return ret;	
 	}
 	
-	return SWAP_BYTE(ret)>>6;
+	return __swab16(ret)>>6;
 }
 
 pthread_mutex_t lock;
@@ -122,37 +121,37 @@ int mpl115_comp_pressure(int fd, int addr, int *val_i, int *val_f){
 		return ret;	
 	}
 	
-	msleep(MPL115_CONVERSION_TIME_MAX);
+	usleep(MPL115_CONVERSION_TIME_MAX);
 	
 	ret = i2c_smbus_read_word_data(fd, MPL115_TADC);
 	if(ret < 0)	
 		return ret;	 
-	tadc = SWAP_BYTE(ret) >> 6;
+	tadc = __swab16(ret) >> 6;
 	
 	ret = i2c_smbus_read_word_data(fd, MPL115_PADC);
 	if(ret < 0)
 		return ret;	 
-	padc = SWAP_BYTE(ret) >> 6;
+	padc = __swab16(ret) >> 6;
 	
 	ret  = i2c_smbus_read_word_data(fd, MPL115_A0);
 	if(ret < 0)
 		return ret;	 
-	a0 = SWAP_BYTE(ret);
+	a0 = __swab16(ret);
 	
 	ret  = i2c_smbus_read_word_data(fd, MPL115_B1);
 	if(ret < 0)
 		return ret;	 
-	b1 = SWAP_BYTE(ret);
+	b1 = __swab16(ret);
 	
 	ret  = i2c_smbus_read_word_data(fd, MPL115_B2);
 	if(ret < 0)
 		return ret;	 
-	b2 = SWAP_BYTE(ret);
+	b2 = __swab16(ret);
 	
 	ret = i2c_smbus_read_word_data(fd, MPL115_C12);
 	if(ret < 0)
 		return ret;	 
-	c12 = SWAP_BYTE(ret);
+	c12 = __swab16(ret);
 
 	pthread_mutex_unlock(&lock);
     pthread_mutex_destroy(&lock);
@@ -196,37 +195,37 @@ int mpl115_press(int fd, int addr, __u16 *data){
 		return ret;	
 	}
 	
-	msleep(MPL115_CONVERSION_TIME_MAX);
+	usleep(MPL115_CONVERSION_TIME_MAX);
 	
 	ret = i2c_smbus_read_word_data(fd, MPL115_TADC);
 	if(ret < 0)	
 		return ret;	 
-	tadc = SWAP_BYTE(ret) >> 6;
+	tadc = __swab16(ret) >> 6;
 	
 	ret = i2c_smbus_read_word_data(fd, MPL115_PADC);
 	if(ret < 0)
 		return ret;	 
-	padc = SWAP_BYTE(ret) >> 6;
+	padc = __swab16(ret) >> 6;
 	
 	ret  = i2c_smbus_read_word_data(fd, MPL115_A0);
 	if(ret < 0)
 		return ret;	 
-	a0 = SWAP_BYTE(ret);
+	a0 = __swab16(ret);
 	
 	ret  = i2c_smbus_read_word_data(fd, MPL115_B1);
 	if(ret < 0)
 		return ret;	 
-	b1 = SWAP_BYTE(ret);
+	b1 = __swab16(ret);
 	
 	ret  = i2c_smbus_read_word_data(fd, MPL115_B2);
 	if(ret < 0)
 		return ret;	 
-	b2 = SWAP_BYTE(ret);
+	b2 = __swab16(ret);
 	
 	ret = i2c_smbus_read_word_data(fd, MPL115_C12);
 	if(ret < 0)
 		return ret;	 
-	c12 = SWAP_BYTE(ret);
+	c12 = __swab16(ret);
 	
 	a1 = b1 + ((c12 * tadc) >> 11);
     y1 = (a0 << 10) + a1 * padc;

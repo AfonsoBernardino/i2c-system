@@ -13,8 +13,7 @@
 #include <fcntl.h>
 #include <errno.h>
 #include <pthread.h>
-#include "swap_byte.h"
-#include "msleep.h"
+#include <linux/swab.h>
 
 /* SHT21 Commands */
 #define SHT21_TRIG_T_MEASUR_HM		0xe3
@@ -28,8 +27,8 @@
 /* SHT21 I2C Address*/
 #define SHT21_ADDR	0x40 //single address
 
-#define SHT21_MEAS_TIME_HUMIDITY 	29 /* 29 ms, max at 12 bit resolution */
-#define SHT21_MEAS_TIME_TEMPERATURE 85 /* 85 ms, max at 14 bit resolution */
+#define SHT21_MEAS_TIME_HUMIDITY 	29000 // 29000 us, max at 12 bit resolution
+#define SHT21_MEAS_TIME_TEMPERATURE 85000 // 85000 us, max at 14 bit resolution
 
 
 
@@ -79,7 +78,7 @@ int sht21_read_value(int fd, int addr, __u8 reg){
 	if(reg == SHT21_USR_REG_RD)
 		return i2c_smbus_read_byte_data(fd, reg);
 	else
-		return SWAP_BYTE(i2c_smbus_read_word_data(fd, reg));	
+		return __swab16(i2c_smbus_read_word_data(fd, reg));	
 }
 
 int sht21_write_value(int fd, int addr, __u8 reg, __u8 val){
@@ -119,17 +118,17 @@ int sht21_measur(int fd, int addr, __u8 reg){
 	}
 	
 	if(reg == SHT21_TRIG_T_MEASUR_NH || reg == SHT21_TRIG_T_MEASUR_HM)
-		msleep(SHT21_MEAS_TIME_TEMPERATURE);
+		usleep(SHT21_MEAS_TIME_TEMPERATURE);
 	else if(reg == SHT21_TRIG_RH_MEASUR_NH || reg == SHT21_TRIG_RH_MEASUR_HM)
-		msleep(SHT21_MEAS_TIME_HUMIDITY);
+		usleep(SHT21_MEAS_TIME_HUMIDITY);
 	else
 		return EXIT_FAILURE;
 	
 	data[0] = i2c_smbus_read_byte(fd);
 	data[1] = i2c_smbus_read_byte(fd);
 
-	msleep(500); //to guarantee a maximum of two measurments
-				 //per second at 12 bit acuracy (datasheet 2.4)
+	usleep(500000); //to guarantee a maximum of two measurments
+				    //per second at 12 bit acuracy (datasheet 2.4)
 
 	pthread_mutex_unlock(&lock);
     pthread_mutex_destroy(&lock);
@@ -151,7 +150,7 @@ void sht21_print_val(__u16 *val, float lsb, char *data_type[8], int ch,
 		write(log_p, str, strlen(str));
 	}
 	else
-		printf("%s%d: %0.3f %\n", data_type[0], ch, humid);
+		printf("%s%d: %0.3f %%\n", data_type[0], ch, humid);
 }
 
 /*

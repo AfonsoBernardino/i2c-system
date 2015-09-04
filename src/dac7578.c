@@ -114,7 +114,7 @@ int dac7875_write_ch(int fd, int addr, int ch, __u16 val){
 		return EXIT_FAILURE;
 	}
 
-	if(ch < DAC7578_CH_A || ch > DAC7578_CH_H && ch != DAC7578_CH_ALL){
+	if((ch < DAC7578_CH_A || ch > DAC7578_CH_H) && ch != DAC7578_CH_ALL){
 		printf("Error: attempt to write on invalid channel\n");
 		return EXIT_FAILURE;
 	}
@@ -132,7 +132,7 @@ __u16 val_to_dac(float val, float lsb){	//val can be: vset in kV or ilim in uA
 int main(int argc, char *argv[]){
 	int fd = 0;
 	char filename[20];
-	int adapter_nr = 2;			
+	//int adapter_nr = 2;			
 	float lsb = 0.097680; //mV   
 	int addr = 0x4a;
 	int flags = 0; 
@@ -179,7 +179,7 @@ int main(int argc, char *argv[]){
 
 	__u16 dac_val = val_to_dac(val, lsb);
 
-	int wr_status = dac7875_write_ch(fd, addr, 0xf, dac_val);
+	dac7875_write_ch(fd, addr, 0xf, dac_val);
 
 	READ:{
 		__u16 data = dac7578_read_ch(fd, addr, 0x6);

@@ -27,7 +27,6 @@
 #include <unistd.h>
 #include <sys/stat.h>
 #include <linux/i2c-dev.h>
-#include "msleep.h"
 #include "func_reg.h"
 #include "mcp23009.h"
 
@@ -153,7 +152,7 @@ int main(int argc, char *argv[]){
 	int flags=0;	int hlp = 0;	   int version = 0;
 	int log = 0;    int hv = 0;        int sensors = 0;
 	int dac = 0;    int hv_on = 0;     int hv_off = 0;
-	int dac_ch = 0; float dac_val = 0; int vset = 0; int ilim = 0 ;
+	int dac_ch = 0; float dac_val = 0;
 
 
 	while (1+flags < argc && argv[1+flags][0] == '-') {
@@ -277,7 +276,7 @@ int main(int argc, char *argv[]){
 //	}	
 
    	int fd_dev;
-	int res;
+	int res = -1;
 	char str[20];
 	int logfile;
 
@@ -350,10 +349,9 @@ int main(int argc, char *argv[]){
 			//										i2c_nodes_list[m].dev.addr_high,
 			//										addr_list);
 
-			float data; int addri; int i=0;
+			int addri; int i=0;
 			int low = subsystem[m].device_list[n].addr_low;
 			int high = subsystem[m].device_list[n].addr_high; 
-			int last_ch=-1;
 			for(addri=low; addri<=high; addri++){
 				if(ioctl(fd_dev, I2C_SLAVE, addri) < 0) {
 				    if (errno == EBUSY) {

@@ -13,7 +13,7 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <errno.h>
-#include "swap_byte.h"
+#include <linux/swab.h>
 
 /*TMP75 Registers*/
 #define TMP75_REG_TEMP		0x00
@@ -29,8 +29,8 @@
 //static const unsigned short tmp75_addr_list[] = { 0x48, 0x49, 0x4a, 0x4b, 0x4c, 
 //											 0x4d, 0x4e, 0x4f, NULL };
 
-const tmp75_addr_low = 0x48;
-const tmp75_addr_high = 0x4f;
+const char tmp75_addr_low = 0x48;
+const char tmp75_addr_high = 0x4f;
 
 /* 	TEMP: 0.1C/bit (-40C to +125C)
 	REG: (0.5C/bit, two's complement) << 7 */
@@ -86,7 +86,7 @@ int tmp75_read_value(int fd, int addr, __u8 reg){
 	if(reg == TMP75_REG_CONFIG)
 		return i2c_smbus_read_byte_data(fd, reg);
 	else
-		return SWAP_BYTE(i2c_smbus_read_word_data(fd, reg));
+		return __swab16(i2c_smbus_read_word_data(fd, reg));
 }
 
 int tmp75_write_value(int fd, int addr, __u8 reg, __u16 value){
@@ -101,7 +101,7 @@ int tmp75_write_value(int fd, int addr, __u8 reg, __u16 value){
 		return i2c_smbus_write_byte_data(fd, reg, tmp);
 	}
 	else
-		return i2c_smbus_write_word_data(fd, reg, SWAP_BYTE(value));
+		return i2c_smbus_write_word_data(fd, reg, __swab16(value));
 }
 
 int tmp75_temp(int fd, int addr, __u16 *data){

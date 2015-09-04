@@ -17,8 +17,8 @@
 #include <errno.h>
 #include "mcp23009.h"
 
-const mcp23009_addr_low = 0x20;
-const mcp23009_addr_high = 0x27;
+const char mcp23009_addr_low = 0x20;
+const char mcp23009_addr_high = 0x27;
 
 /*Check bus functionality*/
 int mcp23009_functionality(int fd){

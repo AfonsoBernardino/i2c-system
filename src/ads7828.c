@@ -13,7 +13,7 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <errno.h>
-#include "swap_byte.h"
+#include <linux/swab.h>
 
 /* The ADS7828 registers */
 #define ADS7828_NCH             8       /* 8 channels supported */
@@ -25,8 +25,8 @@
 #define ADS7828_EXT_VREF_MV_MAX 5250    /* External vref max value 5.25V */
 
 
-const ads7828_addr_low = 0x48;
-const ads7828_addr_high = 0x4b;
+const char ads7828_addr_low = 0x48;
+const char ads7828_addr_high = 0x4b;
 
 /* Command byte C2,C1,C0 - see datasheet */
 static inline __u8 ads7828_cmd_byte(__u8 cmd, int ch){
@@ -63,7 +63,7 @@ int ads7828_read_ch(int fd, int addr, int ch){
 		return EXIT_FAILURE;
 	}
 	
-	return SWAP_BYTE(i2c_smbus_read_word_data(fd, ads7828_cmd_byte(
+	return __swab16(i2c_smbus_read_word_data(fd, ads7828_cmd_byte(
 														ADS7828_CMD_SD_SE|
 														ADS7828_CMD_PD1, ch)));
 }
@@ -90,7 +90,7 @@ void ads7828_print_val(__u16 val[ADS7828_NCH], float lsb,
 		else{	
 			if(ch==4)
 				printf("%s: %0.3f V\n", data_type[ch], val[ch]*lsb);
-			else if(ch==7)
+			else if(ch==0 || ch==1 || ch==7)
 				printf("%s: %0.3f uA\n", data_type[ch], val[ch]*lsb);
 			else
 				printf("%s: %0.3f kV\n", data_type[ch], val[ch]*lsb);

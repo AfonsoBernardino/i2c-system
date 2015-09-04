@@ -13,7 +13,7 @@
 #include <fcntl.h>
 #include <linux/i2c-dev.h>
 #include <errno.h>
-#include "swap_byte.h"
+#include <linux/swab.h>
 
 /* DAC AD5694 Definitions */
 //Command Definitions
@@ -29,8 +29,8 @@
 #define AD5694_RESERVED9			0x0F	//Reserved
 #define AD5694_NCH					8
 
-const int ad5694_addr_high = 0x0c;
-const int ad5694_addr_low = 0x0f;
+const int ad5694_addr_low = 0x0c;
+const int ad5694_addr_high = 0x0f;
  
 static inline __u16 AD5694_VAL_TO_REG(int val){
 	return val<<4;
@@ -70,7 +70,7 @@ int ad5694_read_ch(int fd, int addr, __u8 reg){
 		return EXIT_FAILURE;
 	}
 	
-	return AD5694_REG_TO_VAL(SWAP_BYTE(i2c_smbus_read_word_data(fd, 1<<reg)));
+	return AD5694_REG_TO_VAL(__swab16(i2c_smbus_read_word_data(fd, 1<<reg)));
 }
 
 int ad5694_read_all(int fd, int addr, __u16 data[AD5694_NCH]){
@@ -110,7 +110,7 @@ int ad5694_write_ch(int fd, int addr, __u8 ch, __u16 val){
 		return EXIT_FAILURE;
 	}
 
-	return i2c_smbus_write_word_data(fd, reg, SWAP_BYTE(AD5694_VAL_TO_REG(val)));
+	return i2c_smbus_write_word_data(fd, reg, __swab16(AD5694_VAL_TO_REG(val)));
 }
 
 /*

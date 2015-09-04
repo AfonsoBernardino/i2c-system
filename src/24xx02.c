@@ -14,9 +14,8 @@
 #include <sys/time.h>
 #include <fcntl.h>
 #include <errno.h>
-#include "msleep.h"
 
-#define EEPROM_24XX02_WRITE_CYCLE_TIME_MAX	5 // ms 
+#define EEPROM_24XX02_WRITE_CYCLE_TIME_MAX	5000 // us 
 
 /*24xx02 I2C Address, 7-bit address: 101 0xxx (x = don't care)*/
 unsigned int eeprom24xx02_addr_list[] = {0x50, 0x51, 0x52, 0x53, 0x54, 0x55, 0x56,
@@ -54,7 +53,7 @@ int eeprom_24xx02_write_byte(int fd, int addr, __u8 reg, __u8 val){
 		return ret;	
 	}
 	
-	msleep(EEPROM_24XX02_WRITE_CYCLE_TIME_MAX);
+	usleep(EEPROM_24XX02_WRITE_CYCLE_TIME_MAX);
 	
 	return ret;
 }

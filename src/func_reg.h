@@ -15,9 +15,11 @@ void ads7828_print_val(__u16 val[8], float lsb, char *data_type[8], int i,
 															int log, int log_p);
 
 int ad5694_read_all(int fd, int addr, __u16 data[8]);
+int ad5694_write_ch(int fd, int addr, __u8 ch, __u16 val);
 void ad5694_print_val(__u16 val[8], float lsb, char *data_type[8], int i,
 															int log, int log_p);
 
 int mcp23009_read_val2(int fd, int addr, __u16 data[8]);
+int mcp23009_write_val(int fd, int addr, __u8 reg, __u8 val);
 void mcp23009_print_val(__u16 val[8], float lsb, char *data_type[8], int i,
 															int log, int log_p);

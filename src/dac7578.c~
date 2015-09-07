@@ -156,10 +156,10 @@ int main(int argc, char *argv[]){
 					break;
 			default:
 					fprintf(stderr, "Error: Unsupported option "
-													"\"%s\"!\n", argv[1+flags]);
-					return EXIT_FAILURE;
-		}
-		flags++;	
+												"\"%s\"!\n", argv[1+flags]);
+                    return EXIT_FAILURE;
+     		}
+			flags++;	
 	}
 	
 	if(bus < 0 || bus > 11){	

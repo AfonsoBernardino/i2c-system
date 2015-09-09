@@ -142,15 +142,15 @@ int main(int argc, char *argv[]){
 
 	while (1+flags < argc && argv[1+flags][0] == '-') {
 	    switch (argv[1+flags][1]) {
-			case 'b':
+			case 'b'://bus number
 					bus = atoi(argv[2+flags]);
 					flags++;
 					break;
-			case 'c':
+			case 'c'://channel number
 					ch = atoi(argv[2+flags]);
 					flags++;
 					break;
-			case 's': 
+			case 's'://set value 
 					val = atof(argv[2+flags]);
 					flags++;
 					break;
@@ -174,19 +174,25 @@ int main(int argc, char *argv[]){
 		return EXIT_FAILURE;
 	}
 
-	if(ch < -1 || ch > 8){
+	if(ch < -1 || ch > 7){
 		fprintf(stderr, "Error: wrong channel\n");
 		return EXIT_FAILURE;
 	}
 		
-	if(val == -1){ //Read
+	if(val == -1){	//Then read
 		__u16 data = 0;
-		int ch_i;
-		printf("PREC %i thresholds\n", bus);
-		for(ch_i=DAC7578_CH_A; ch_i<=DAC7578_CH_H; ch_i++){
-			data = dac7578_read_ch(fd, addr, ch_i);
-			printf("Ch %i: %0.1f mV\n", ch_i, data*lsb);
-		}	
+		if(ch == -1){	//Read all
+			int ch_i;
+			printf("PREC %i thresholds\n", bus);
+			for(ch_i=DAC7578_CH_A; ch_i<=DAC7578_CH_H; ch_i++){
+				data = dac7578_read_ch(fd, addr, ch_i);
+				printf("Ch %i: %0.1f mV\n", ch_i, data*lsb);
+			}	
+		}
+		else{	//Read ch
+			data = dac7578_read_ch(fd, addr, ch);
+			printf("Ch %i: %0.1f mV\n", ch, data*lsb);
+		}
 		goto OUT;
 	}
 

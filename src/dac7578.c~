@@ -180,8 +180,13 @@ int main(int argc, char *argv[]){
 	}
 		
 	if(val == -1){ //Read
-		__u16 data = dac7578_read_ch(fd, addr, ch);
-		printf("Threshold: %0.1f mV\n", data*lsb);
+		__u16 data = 0;
+		int ch_i;
+		printf("PREC %i thresholds\n", bus);
+		for(ch_i=DAC7578_CH_A; ch_i<=DAC7578_CH_H; ch_i++){
+			data = dac7578_read_ch(fd, addr, ch_i);
+			printf("Ch %i: %0.1f mV\n", ch_i, data*lsb);
+		}	
 		goto OUT;
 	}
 
@@ -193,7 +198,7 @@ int main(int argc, char *argv[]){
 	__u16 dac_val = val_to_dac(val, lsb);
 
 	if(ch == -1)
-		dac7875_write_ch(fd, addr, 0xf, dac_val);
+		dac7875_write_ch(fd, addr, DAC7578_CH_ALL, dac_val);
 	else
 		dac7875_write_ch(fd, addr, ch, dac_val);
 

@@ -52,7 +52,7 @@
 #define DAC7578_CH_H		0x7
 #define DAC7578_CH_ALL		0xf
 
-const int dac7578_addr_list[4] = {0x48, 0x4a, 0x4c, '\0'};
+const int dac7578_addr_list[4] = {0x48, 0x4a, 0x4c, 0};
 
 static inline __u16 DAC7875_VAL_TO_REG(int val){
 	return val<<4;
@@ -129,37 +129,12 @@ __u16 val_to_dac(float val, float lsb){	//val can be: vset in kV or ilim in uA
 	return (__u16) (val/lsb + 0.5);		//float to int rounding conversion;
 }
 
-int get_addr(int fd, const int *list){
-	int i; 
-	int ret = -1;
-	for(i=0; list[i]!='\0'; i++){
-		if(ioctl(fd, I2C_SLAVE, list[i]) < 0) {
-			if (errno == EBUSY) {
-				continue;
-			} else {
-				fprintf(stderr, "Error: Could not set address to 0x%02x: %s\n",
-															list[i],
-					 				                      	strerror(errno));
-				return EXIT_FAILURE;
-			}
-		}
-
-		if(i2c_smbus_write_quick(fd, I2C_SMBUS_WRITE) < 0)
-			continue;
-		else{
-			ret = list[i];
-			break;
-		}
-	}
-	return ret;
-}
-
 int main(int argc, char *argv[]){
 	int fd = 0;
 	char filename[20];
 	//int adapter_nr = 2;			
 	float lsb = 0.097680; //mV   
-	int addr;//  0x4a;
+	int addr = 0x4a;
 	int flags = 0; 
 	int bus = -1;
 	int ch = -1;
@@ -196,11 +171,6 @@ int main(int argc, char *argv[]){
 
 	if((fd = open(filename, O_RDWR)) < 0){
 		printf("Failed to open the bus (adapter); %s\n", strerror(errno));
-		return EXIT_FAILURE;
-	}
-
-	if((addr = get_addr(fd, dac7578_addr_list)) < 0){
-		printf("Device not present; %s\n", strerror(errno));
 		return EXIT_FAILURE;
 	}
 

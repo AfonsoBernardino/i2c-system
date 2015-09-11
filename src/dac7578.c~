@@ -156,9 +156,9 @@ int get_addr(int fd, const int *list){
 
 static void help(void){
 	printf("\nTo read all PREC channels:\n"
-"     prec -b [bus_number]\n\n"
+"     PREC -b [bus_number]\n\n"
 "To set all PREC channels with the same value:\n"
-"     prec -b [bus_number] -t [threshold_value]\n\n"
+"     PREC -b [bus_number] -t [threshold_value]\n\n"
 "OPTIONS\n"
 "     -b (num)\n"
 "                  Bus number where HV is connected.\n\n"

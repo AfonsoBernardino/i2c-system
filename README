@@ -8,7 +8,7 @@ Download this package in the home directory:
 	git clone https://github.com/AfonsoBernardino/i2c-system.git
 
 
-Them execute make in the package root:
+Then execute make in the package root:
 
 	make
 

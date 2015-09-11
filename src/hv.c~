@@ -105,7 +105,7 @@ int main(int argc, char *argv[]){
 	int flag_vset = 0; int flag_ilim = 0; 
 	int hv_on = 0; int hv_off = 0;
 	//int version = 0; int hlp = 0; 
-	int flags = 0; int log = 0;
+	int flags = 0;
 	while (1+flags < argc && argv[1+flags][0] == '-') {
 	    switch (argv[1+flags][1]) {
 			//case 'h': hlp = 1; break;
@@ -123,9 +123,6 @@ int main(int argc, char *argv[]){
 					flags++;
 					ilim = atof(argv[1+flags]);
 					flag_ilim = 1; 					
-					break;
-			case 'l': 
-					log = 1; 					
 					break;
             case 'o':
                     if ( !strcasecmp(argv[1+flags], "-on") ){
@@ -154,7 +151,6 @@ int main(int argc, char *argv[]){
 
 	char filename[20];
 	int fd;
-	//char str[20];
    	snprintf(filename, 19, "/dev/i2c-%d", bus+1);
    	
 	if((fd = open(filename, O_RDWR)) < 0){
@@ -185,64 +181,40 @@ int main(int argc, char *argv[]){
 		mcp23009_write_val(fd, addr, MCP23009_REG_IODIR, 0x17);
 		mcp23009_write_val(fd, addr, MCP23009_REG_GPIO, 0x00);
 	}
-	
+
 	if(!(flag_vset || flag_ilim || hv_on || hv_off)){ //Read all devices
 		
 		struct i2c_child_bus subsystem;
 
 		subsystem.bus_num = bus;
 		subsystem.device_list = hv_dev_list;
-		int n; int logfile = 0;
-		if(log){
-			time_t rawtime;
-		  	struct tm *info;
-			char date[20];
-			char hour[16];
-			char file_path [64] = "/home/hv/i2c-system/log/";
-		   	time( &rawtime );
-			info = localtime( &rawtime );
-
-
-			sprintf(date, "hv%04d-%02d-%02d.log", info->tm_year+1900,
-	   											  info->tm_mon+1,
-	   											  info->tm_mday);
-
-		   	strcat(file_path, date);								
-		   	logfile = open(file_path, O_WRONLY|O_APPEND|O_CREAT);
-		   	fchmod(logfile, S_IRUSR|S_IWUSR|S_IRGRP|S_IROTH);
-		   		
-		   	sprintf(hour, "%02d:%02d:%02d\t", info->tm_hour, 
-		   									   info->tm_min, 
-		   									   info->tm_sec);
-	
-			write(logfile, hour, 11);
-		}
-
+		int n; int logfile = 0; int log = 0;
+		//char file_path [32] = "/home/hv/log/";
+		
 		for(n=0; subsystem.device_list[n].name[0]!='\0'; n++){
 			int addri; int i=0;
 			int low = subsystem.device_list[n].addr_low;
 			int high = subsystem.device_list[n].addr_high; 
 			for(addri=low; addri<=high; addri++){
 				if(ioctl(fd, I2C_SLAVE, addri) < 0) {
-				    if (errno == EBUSY){
-			        	if(log){
-							char str[20];
-							sprintf(str, "0 ");
-							write(logfile, str, strlen(str));
-						}
-						else{
+				    if (errno == EBUSY) {
+			        	//if(log){
+						//	sprintf(str, "0 ");
+						//	write(logfile, str, strlen(str));
+						//}
+						//else{
 						printf("%s%d: 0\n", 
 										subsystem.device_list[n].data_type[0], 
 										i);
 						i++;
-						}
+					//}
 						continue;
 			        } else {
 			            fprintf(stderr, "Error: Could not set "
 	 			                                 	"address to 0x%02x: %s\n", 
 													addri,
 			     				                 	strerror(errno));
-			            return EXIT_FAILURE;
+			            return -1;
 			        }
 				}
 

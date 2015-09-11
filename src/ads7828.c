@@ -76,7 +76,7 @@ int ads7828_read_all(int fd, int addr, __u16 data[ADS7828_NCH]){
 	return 0;
 }
 
-void ads7828_print_val(__u16 val[ADS7828_NCH], float lsb, 
+void ads7828_print_val(__u16 val[ADS7828_NCH], float lsb, float *conv_param, 
 												  char *data_type[ADS7828_NCH],
 												     int i, int log, int log_p){
 	int ch; char str[16];
@@ -84,18 +84,18 @@ void ads7828_print_val(__u16 val[ADS7828_NCH], float lsb,
 		printf("-----ADC------\n");
 	for(ch=0;ch<8; ch++){
 		if(log){
-			sprintf(str, "%0.3f ", val[ch]*lsb);
+			sprintf(str, "%0.3f ", val[ch]*lsb*conv_param[ch]);
 			write( log_p, str, strlen(str) );
 		}
 		else{	
 			if(ch==4)
-				printf("%s: %0.3f nA\n", data_type[ch], val[ch]*lsb*200);
+				printf("%s: %0.3f nA\n", data_type[ch], val[ch]*lsb*conv_param[ch]);
 			else if(ch==5)
-				printf("%s: %0.3f uA\n", data_type[ch], val[ch]*lsb/2);
+				printf("%s: %0.3f uA\n", data_type[ch], val[ch]*lsb*conv_param[ch]);
 			else if(ch==0 || ch==1 || ch==7)
-				printf("%s: %0.3f uA\n", data_type[ch], val[ch]*lsb);
+				printf("%s: %0.3f uA\n", data_type[ch], val[ch]*lsb*conv_param[ch]);
 			else
-				printf("%s: %0.3f kV\n", data_type[ch], val[ch]*lsb);
+				printf("%s: %0.3f kV\n", data_type[ch], val[ch]*lsb*conv_param[ch]);
 		}
 	}
 }

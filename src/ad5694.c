@@ -81,19 +81,20 @@ int ad5694_read_all(int fd, int addr, __u16 data[AD5694_NCH]){
 	return 0;
 }
 
-void ad5694_print_val(__u16 val[AD5694_NCH], float lsb, char *data_type[8], 
-													 int i, int log, int log_p){
+void ad5694_print_val(__u16 val[AD5694_NCH], float lsb, float *conv_param, 
+													char *data_type[8], int i, 
+													int log, int log_p){
 	int ch;
 	if(!log)
 		printf("-----DAC------\n");
 	for(ch=0;ch<2; ch++){
 		if(log){
 			char str[16];
-			sprintf(str,"%0.3f ", val[ch]*lsb);
+			sprintf(str,"%0.3f ", val[ch]*lsb*conv_param[ch]);
 			write(log_p, str, strlen(str));
 		}
 		else
-			printf("%s: %0.3f %s\n", data_type[ch], val[ch]*lsb, (ch==1?"uA":"kV"));
+			printf("%s: %0.3f %s\n", data_type[ch], val[ch]*lsb*conv_param[ch], (ch==1?"uA":"kV"));
 	}
 }
 

@@ -71,8 +71,9 @@ int mcp23009_read_val2(int fd, int addr, __u16 data[8]){
 	return 0;
 }
 
-void mcp23009_print_val(__u16 val[8], float lsb, char *data_type[8], int i, 
-															int log, int log_p){
+void mcp23009_print_val(__u16 val[8], float lsb, float conv_param[8], 
+															char *data_type[8], 
+															int i, int log, 															int log_p){
 	int bit;
 	if(!log)
 		printf("------IO------\n");

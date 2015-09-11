@@ -240,8 +240,10 @@ int mpl115_press(int fd, int addr, __u16 *data){
 }
 
 
-void mpl115_print_val(__u16 *val, float lsb, char *data_type[8], int ch, 
-															int log, int log_p){	
+void mpl115_print_val(__u16 val[8], float lsb, float conv_param[8], 
+															char *data_type[8], 
+															int ch, int log, 
+															int log_p){
 
 	int val_i = val[0] >> 4;
 	int val_f = (val[0] & 15) * (1000000 >> 4);

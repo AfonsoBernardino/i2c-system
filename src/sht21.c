@@ -141,8 +141,10 @@ int sht21_humid(int fd, int addr, __u16 *data){
 	return 0;
 }
 
-void sht21_print_val(__u16 *val, float lsb, char *data_type[8], int ch, 
-															int log, int log_p){
+void sht21_print_val(__u16 val[8], float lsb, float conv_param[8], 
+															char *data_type[8], 
+															int ch, int log, 
+															int log_p){
 	float humid = sht21_rh_ticks_to_per_cent_mille(val[0])/1000;
 	if(log){
 		char str[16];

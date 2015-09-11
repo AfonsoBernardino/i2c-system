@@ -41,7 +41,7 @@ prec : $(addprefix $(OBJDIR)/, $(PRECOBJ))
 .PHONY : all
 
 clean : 
-	@rm -f *.o *~ $(OBJDIR)/*.o $(SRCDIR)/*~ 
+	@rm -f *~ $(OBJDIR)/*.o $(SRCDIR)/*~ 
 	@rm -r $(BINDIR)/tool
 	@rm -f $(BINDIR)/hv
 	@rm -f $(BINDIR)/prec

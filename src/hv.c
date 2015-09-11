@@ -27,9 +27,10 @@ struct device{
 	int addr_low;
 	int addr_high;
 	int (*read_val)(int, int, __u16[8]);
-	void (*print_val)(__u16[8], float, char*[8], int, int, int);
+	void (*print_val)(__u16[8], float, float*, char*[8], int, int, int);
 	__u16 val[8];
 	float lsb;
+	float conv_param[8];
 };
 
 struct device hv_dev_list[4] = {
@@ -39,14 +40,16 @@ struct device hv_dev_list[4] = {
 	 .addr_high = 0x4b,
 	 .read_val  = ads7828_read_all, 
 	 .print_val = ads7828_print_val, 
-	 .lsb = 2*4.53/4096, },
+	 .lsb = 4.53/4096, 
+	 .conv_param = {2, 2, 2, 2, 400, 1, 2, 2}, }, //unit conversion parameters
 	{.name      = "ad5694",
 	 .data_type = {"Vset","Ilim","DAC2","DAC3","DAC4","DAC5","DAC6","DAC7"},
 	 .addr_low  = 0x0c,
 	 .addr_high = 0x0f,
 	 .read_val  = ad5694_read_all, 
 	 .print_val = ad5694_print_val, 
-	 .lsb = 2*4.53/4096, },
+	 .lsb = 4.53/4096, 
+	 .conv_param = {2, 2, 1, 1, 1, 1, 1, 1}, }, //unit conversion parameters
     {.name      = "mcp23009",
 	 .data_type = {"D0  ","D1  ","D2  ","HVon","D4  ","D5  ","D6  ","D7  "},
 	 .addr_low  = 0x20,
@@ -253,10 +256,11 @@ int main(int argc, char *argv[]){
 										   subsystem.device_list[n].val);
 	
 				subsystem.device_list[n].print_val(
-									  	subsystem.device_list[n].val, 
-									  	subsystem.device_list[n].lsb,
-									  	subsystem.device_list[n].data_type,
-									  	i, log, logfile);
+										 	subsystem.device_list[n].val, 
+										 	subsystem.device_list[n].lsb,
+										 	subsystem.device_list[n].conv_param,
+										 	subsystem.device_list[n].data_type,
+										 	i, log, logfile);
 				i++;	
 			}
 		}

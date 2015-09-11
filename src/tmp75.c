@@ -110,8 +110,10 @@ int tmp75_temp(int fd, int addr, __u16 *data){
 	return 0;
 }
 
-void tmp75_print_val(__u16 *val, float lsb, char *data_type[8], int ch, 
-															int log, int log_p){
+void tmp75_print_val(__u16 val[8], float lsb, float conv_param[8], 
+															char *data_type[8], 
+															int ch, int log, 
+															int log_p){
 	if(log){
 		char str[16];
 		sprintf(str, "%0.3f ", TMP75_TEMP_FROM_REG_12BIT(val[0]));

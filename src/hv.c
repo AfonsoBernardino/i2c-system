@@ -71,11 +71,21 @@ __u16 vset_ilim_to_ad5694(float val){	//val can be: vset in kV or ilim in uA
 }
 
 static void help(void){
-	printf("Usage:\n"
-"     tool -Vset (Ilim) VAL                   *write VAL to Vset (Ilim)*\n"
-"     tool -on (-off)                         *turn HV on (off)*\n"
-"     tool -v                                 *tool software version*\n"
-"     tool -h                                 *help menu*\n");
+	printf("To see HV general status:\n"
+           "     hv -b [bus_number]\n\n"
+"OPTIONS\n"
+"     -b (num)\n"
+"                  Bus number where HV is connected \n\n"
+"     -V (val)\n"
+"                  Vset value\n\n"
+"     -I (val)\n"
+"                  Ilim value\n\n"
+"     -on\n"
+"                  Turn the High-Voltage source on\n\n"
+"     -off\n"
+"                  Turn the High-Voltage source off\n\n"
+"     -h\n"
+"                  Help menu\n\n");
 
 }
 
@@ -107,7 +117,8 @@ int main(int argc, char *argv[]){
 	float vset = -1; float ilim = -1;
 	int flag_vset = 0; int flag_ilim = 0; 
 	int hv_on = 0; int hv_off = 0;
-	//int version = 0; int hlp = 0; 
+	//int version = 0; 
+	int hlp = 0; 
 	int flags = 0; int log = 0;
 	while (1+flags < argc && argv[1+flags][0] == '-') {
 	    switch (argv[1+flags][1]) {
@@ -130,6 +141,9 @@ int main(int argc, char *argv[]){
 			case 'l': 
 					log = 1; 					
 					break;
+			case 'h': 
+					hlp = 1; 					
+					break;
             case 'o':
                     if ( !strcasecmp(argv[1+flags], "-on") ){
 						hv_on = 1; break;
@@ -148,6 +162,11 @@ int main(int argc, char *argv[]){
                     return EXIT_FAILURE;
      		}
 			flags++;	
+	}
+
+	if(hlp){
+		help();
+		return 0;
 	}
 
 	if(bus < BUS_NUM_LOW || bus > BUS_NUM_HIGH){

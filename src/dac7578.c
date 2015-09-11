@@ -154,6 +154,23 @@ int get_addr(int fd, const int *list){
 	return ret;
 }
 
+static void help(void){
+	printf("To read all PREC channels:\n"
+"     PREC -b [bus_number]\n\n"
+"To set all PREC channels with the same value:\n"
+"     PREC -b [bus_number] -t [threshold_value]\n\n"
+"OPTIONS\n"
+"     -b (num)\n"
+"                  Bus number where HV is connected.\n\n"
+"     -c (chan)\n"
+"                  Channel number. To set individual channels.\n\n"
+"     -t (val)\n"
+"                  Threshold value\n\n"
+"     -h\n"
+"                  Help menu\n\n");
+
+}
+
 int main(int argc, char *argv[]){
 	int fd = 0;
 	char filename[20];
@@ -164,6 +181,7 @@ int main(int argc, char *argv[]){
 	int bus = -1;
 	int ch = -1;
 	float val = -1;
+	int hlp = 0;
 
 	while (1+flags < argc && argv[1+flags][0] == '-') {
 	    switch (argv[1+flags][1]) {
@@ -175,9 +193,12 @@ int main(int argc, char *argv[]){
 					ch = atoi(argv[2+flags]);
 					flags++;
 					break;
-			case 's'://set value 
+			case 't'://set value 
 					val = atof(argv[2+flags]);
 					flags++;
+					break;
+			case 'h': 
+					hlp = 1; 					
 					break;
 			default:
 					fprintf(stderr, "Error: Unsupported option "
@@ -186,7 +207,12 @@ int main(int argc, char *argv[]){
 		}
 		flags++;	
 	}
-	
+
+	if(hlp){
+		help();
+		return 0;
+	}
+
 	if(bus < 0 || bus > 11){	
 		printf("Error: wrong bus number\n");
 		return EXIT_FAILURE;

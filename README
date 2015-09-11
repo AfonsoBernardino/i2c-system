@@ -1,0 +1,21 @@
+Install git if it hasn't been installed previously:
+
+	sudo apt-get install git
+
+
+Download this package in the home directory:
+
+	git clone https://github.com/AfonsoBernardino/i2c-system.git
+
+
+Them execute make in the package root:
+
+	make
+
+
+After this the following binaries can be found in i2c-system/bin directory:
+
+tool, hv, prec
+
+
+Execute each one of them with the option -h to get help and usage instructions.

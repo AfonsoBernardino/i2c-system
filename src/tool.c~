@@ -206,7 +206,7 @@ int main(int argc, char *argv[]){
 	}
 	FILE *fp_conf;
 			
-	fp_conf = fopen("/home/hv/i2c-system/i2c-system.conf", "r");
+	fp_conf = fopen("/home/hv/network.conf", "r");
 
 	int c;
 	char line[CONFIG_FILE_LINE_MAX];

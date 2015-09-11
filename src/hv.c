@@ -71,15 +71,18 @@ __u16 vset_ilim_to_ad5694(float val){	//val can be: vset in kV or ilim in uA
 }
 
 static void help(void){
-	printf("To see HV general status:\n"
+	printf("\nTo see HV general status:\n"
            "     hv -b [bus_number]\n\n"
 "OPTIONS\n"
 "     -b (num)\n"
-"                  Bus number where HV is connected \n\n"
+"                  Bus number where HV is connected\n\n"
 "     -V (val)\n"
 "                  Vset value\n\n"
 "     -I (val)\n"
 "                  Ilim value\n\n"
+"     -l\n"
+"                  Write values to log file. The file can be found at\n"
+"                  i2c-system/log directory\n\n"
 "     -on\n"
 "                  Turn the High-Voltage source on\n\n"
 "     -off\n"

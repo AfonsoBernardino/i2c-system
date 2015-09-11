@@ -155,7 +155,7 @@ int get_addr(int fd, const int *list){
 }
 
 static void help(void){
-	printf("To read all PREC channels:\n"
+	printf("\nTo read all PREC channels:\n"
 "     PREC -b [bus_number]\n\n"
 "To set all PREC channels with the same value:\n"
 "     PREC -b [bus_number] -t [threshold_value]\n\n"

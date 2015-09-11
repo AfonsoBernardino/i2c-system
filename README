@@ -10,6 +10,7 @@ Download this package in the home directory:
 
 Then execute make in the package root:
 
+	cd i2c-system
 	make
 
 

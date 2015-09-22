@@ -91,7 +91,7 @@ void ads7828_print_val(__u16 val[ADS7828_NCH], float lsb, float *conv_param,
 			if(ch==4)
 				printf("%s: %0.3f nA\n", data_type[ch], val[ch]*lsb*conv_param[ch]);
 			else if(ch==5)
-				printf("%s: %0.3f uA\n", data_type[ch], val[ch]*lsb*conv_param[ch]);
+				printf("%s: %0.3f V\n", data_type[ch], val[ch]*lsb*conv_param[ch]);
 			else if(ch==0 || ch==1 || ch==7)
 				printf("%s: %0.3f uA\n", data_type[ch], val[ch]*lsb*conv_param[ch]);
 			else

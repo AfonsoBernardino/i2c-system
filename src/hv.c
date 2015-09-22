@@ -287,6 +287,10 @@ int main(int argc, char *argv[]){
 			}
 		}
 	}
-
+	close(fd);
+	if(log){
+		write(logfile, "\n", 1);
+		close(logfile);
+	}
 	return 0;
 }

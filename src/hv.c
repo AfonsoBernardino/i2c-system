@@ -222,7 +222,7 @@ int main(int argc, char *argv[]){
 			time_t rawtime;
 		  	struct tm *info;
 			char date[20];
-			char hour[16];
+			char hour[32];
 			char file_path [64] = "/home/hv/i2c-system/log/";
 		   	time( &rawtime );
 			info = localtime( &rawtime );
@@ -236,11 +236,14 @@ int main(int argc, char *argv[]){
 		   	logfile = open(file_path, O_WRONLY|O_APPEND|O_CREAT);
 		   	fchmod(logfile, S_IRUSR|S_IWUSR|S_IRGRP|S_IROTH);
 		   		
-		   	sprintf(hour, "%02d:%02d:%02d\t", info->tm_hour, 
-		   									   info->tm_min, 
-		   									   info->tm_sec);
+	   	sprintf(hour, "%04d-%02d-%02dT%02d:%02d:%02d; ", info->tm_year+1900, 
+	   													info->tm_mon+1,
+	   												   	info->tm_mday,
+	   												   	info->tm_hour, 
+	   									   				info->tm_min, 
+	   									   				info->tm_sec);
 	
-			write(logfile, hour, 11);
+			write(logfile, hour, 21);
 		}
 
 		for(n=0; subsystem.device_list[n].name[0]!='\0'; n++){

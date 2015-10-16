@@ -20,10 +20,10 @@
 
 #bus0=hv
 #bus1=sensors
+#bus1=
 #bus2=
 #bus3=
 #bus4=
 #bus5=
 #bus6=
-#bus7=
 #bus8=hv

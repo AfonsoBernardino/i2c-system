@@ -254,7 +254,7 @@ int main(int argc, char *argv[]){
 	}
 
 	int bus_eff;
-	for(; counter > 0; counter--){
+	for(counter; counter > 0; counter--){
 
 		bus_eff = bus + bus_offset + (board_num==-1?counter:board_num);
 		snprintf(filename, 19, "/dev/i2c-%d", bus_eff);
